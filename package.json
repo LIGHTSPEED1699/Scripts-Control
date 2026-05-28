@@ -1,0 +1,29 @@
+{
+  "name": "control-systems-web",
+  "version": "1.0.0",
+  "description": "Control systems simulation library for web-based PID tuning and process modeling",
+  "main": "control-systems-lib.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/validate.js",
+    "validate": "node test/validate.js"
+  },
+  "keywords": [
+    "pid",
+    "control-systems",
+    "simulation",
+    "state-space",
+    "transfer-function",
+    "tuning"
+  ],
+  "author": "Spot",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LIGHTSPEED1699/control-systems-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LIGHTSPEED1699/control-systems-web/issues"
+  },
+  "homepage": "https://github.com/LIGHTSPEED1699/control-systems-web#readme"
+}

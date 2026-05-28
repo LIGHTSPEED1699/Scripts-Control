@@ -1,7 +1,7 @@
 {
   "name": "scripts-control",
-  "version": "1.0.0",
-  "description": "Control systems simulation library for web-based PID tuning and process modeling",
+  "version": "1.1.0",
+  "description": "Control systems simulation library: PID, MRAC, Bode analysis, and canvas plotting",
   "main": "control-systems-lib.js",
   "type": "module",
   "scripts": {
@@ -14,7 +14,10 @@
     "simulation",
     "state-space",
     "transfer-function",
-    "tuning"
+    "mrac",
+    "adaptive-control",
+    "bode-plot",
+    "nyquist",
   ],
   "author": "Spot",
   "license": "MIT",

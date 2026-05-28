@@ -1,6 +1,6 @@
 # Scripts-Control
 
-JavaScript library for control systems simulation, extracted from the interactive tools at [hongbinli.com](https://hongbinli.com).
+JavaScript library for control systems simulation and industrial calculators, extracted from the interactive tools at [hongbinli.com](https://hongbinli.com).
 
 ## Modules
 
@@ -10,10 +10,13 @@ JavaScript library for control systems simulation, extracted from the interactiv
 | `mrac-lib.js` | Model Reference Adaptive Control (Lyapunov + MIT) | `MRAC.astro` |
 | `bode-plot-lib.js` | Frequency response, stability margins, Nyquist | `PIDTuner.astro` |
 | `canvas-plot-utils.js` | Shared canvas drawing utilities | `PIDTuner.astro`, `MRAC.astro` |
+| `process-model-lib.js` | FOLPD/SOPTD/2nd order step response and Bode | `process-model/index.astro` |
+| `combustion-lib.js` | Natural gas/hydrogen combustion, AFR, heat input | `combustion-calculator/index.astro` |
+| `loop-load-lib.js` | 4-20mA loop load, cable resistance, voltage margin | `loop-load/index.astro` |
 
 ## What's Included
 
-### Core (`control-systems-lib.js`)
+### Control Systems (`control-systems-lib.js`)
 - **Transfer Function ↔ State Space** conversion (validated against Python scipy)
 - **PID Controller** with derivative filter and anti-windup
 - **Process Models**: FOLPD, SOPDT, Arbitrary TF
@@ -40,6 +43,27 @@ JavaScript library for control systems simulation, extracted from the interactiv
 - Step response trace plotting
 - MRAC sliding-window scope rendering
 - Dark/light theme support
+
+### Process Model Simulator (`process-model-lib.js`)
+- **FOLPD**: Closed-form step response and Bode with dead time
+- **SOPTD**: Two real poles plus dead time
+- **Standard 2nd Order**: ζ, ωn parameterization (underdamped, critically damped, overdamped)
+- Bandwidth calculation from -3 dB point
+
+### Combustion Calculator (`combustion-lib.js`)
+- Natural gas (CH₄) and hydrogen (H₂) combustion
+- Stoichiometric and excess-air airflow
+- Stack O₂ forecast (dry basis)
+- Heat input calculation (MMBTU/h)
+- Reverse calculation: excess air from measured O₂
+
+### Loop Load Calculator (`loop-load-lib.js`)
+- 4-20 mA loop voltage drop analysis
+- Cable resistance by AWG gauge
+- Receiver burden (250Ω / 50Ω / custom)
+- Voltage margin at transmitter
+- Maximum cable length calculation
+- Current-to-process value conversion
 
 ## Quick Start
 
@@ -87,6 +111,41 @@ console.log('Phase margin:', margins.pm, 'degrees');
 console.log('Gain margin:', margins.gm_dB, 'dB');
 ```
 
+```javascript
+// Process model simulation
+import { simulateProcessModel } from './process-model-lib.js';
+
+const result = simulateProcessModel('so2', { K: 1, zeta: 0.5, wn: 2 });
+console.log('Rise time metrics:', result.metrics);
+// result.t, result.y, result.omega, result.mag, result.phase
+```
+
+```javascript
+// Combustion calculation
+import { calculateCombustion } from './combustion-lib.js';
+
+const result = calculateCombustion('natural_gas', 1000, 'scfh', 15);
+console.log('Heat input:', result.heatInput.mmbtuPerHour, 'MMBTU/h');
+console.log('Stack O₂:', result.stackO2.percent, '%');
+```
+
+```javascript
+// Loop load analysis
+import { calculateLoopLoad } from './loop-load-lib.js';
+
+const result = calculateLoopLoad({
+  supplyVoltage: 24,
+  txMinVoltage: 10.5,
+  burden: 250,
+  awg: 18,
+  cableLength: 500,
+  lengthUnit: 'ft',
+  extraResistance: 0
+});
+console.log('Voltage margin:', result.loop.voltageMargin, 'V');
+console.log('Status:', result.status.message);
+```
+
 ## Validation
 
 Cross-checked against Python `scipy.signal.tf2ss`:
@@ -102,6 +161,8 @@ These algorithms power:
 - [Relay Feedback PID Tuner](https://hongbinli.com/tools/relay-pid-tuner)
 - [Process Model Simulator](https://hongbinli.com/tools/process-model)
 - [MRAC Demo](https://hongbinli.com/tools/mrac-demo)
+- [Combustion Calculator](https://hongbinli.com/tools/combustion-calculator)
+- [Loop Load Calculator](https://hongbinli.com/tools/loop-load)
 
 ## License
 

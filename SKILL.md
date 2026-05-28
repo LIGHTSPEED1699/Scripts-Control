@@ -1,10 +1,10 @@
 ---
-name: control-systems-web
+name: Scripts-Control
 description: "Control systems simulation library for web-based PID tuning, process modeling, and adaptive control."
 metadata:
   author: "Spot (hongbinli-website)"
   version: "1.0.0"
-  homepage: "https://github.com/LIGHTSPEED1699/control-systems-web"
+  homepage: "https://github.com/LIGHTSPEED1699/Scripts-Control"
   license: "MIT"
   keywords: ["pid", "control-systems", "simulation", "tuning", "tf2ss", "state-space"]
   source_repo: "https://github.com/LIGHTSPEED1699/hongbinli-website"

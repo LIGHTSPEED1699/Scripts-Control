@@ -1,5 +1,5 @@
 {
-  "name": "control-systems-web",
+  "name": "scripts-control",
   "version": "1.0.0",
   "description": "Control systems simulation library for web-based PID tuning and process modeling",
   "main": "control-systems-lib.js",
@@ -20,10 +20,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LIGHTSPEED1699/control-systems-web.git"
+    "url": "https://github.com/LIGHTSPEED1699/Scripts-Control.git"
   },
   "bugs": {
-    "url": "https://github.com/LIGHTSPEED1699/control-systems-web/issues"
+    "url": "https://github.com/LIGHTSPEED1699/Scripts-Control/issues"
   },
-  "homepage": "https://github.com/LIGHTSPEED1699/control-systems-web#readme"
+  "homepage": "https://github.com/LIGHTSPEED1699/Scripts-Control#readme"
 }

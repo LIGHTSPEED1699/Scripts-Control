@@ -1,6 +1,6 @@
 # Scripts-Control
 
-JavaScript library for control systems simulation and industrial calculators, extracted from the interactive tools at [hongbinli.com](https://hongbinli.com).
+JavaScript library for control systems simulation and industrial calculators, extracted from the interactive tools at [www.hongbinli.ca](https://www.hongbinli.ca).
 
 ## Modules
 
@@ -156,13 +156,13 @@ Cross-checked against Python `scipy.signal.tf2ss`:
 ## Related Interactive Tools
 
 These algorithms power:
-- [PID Tuner](https://hongbinli.com/tools/pid-tuner)
-- [Manual PID Tuner](https://hongbinli.com/tools/manual-pid-tuner)
-- [Relay Feedback PID Tuner](https://hongbinli.com/tools/relay-pid-tuner)
-- [Process Model Simulator](https://hongbinli.com/tools/process-model)
-- [MRAC Demo](https://hongbinli.com/tools/mrac-demo)
-- [Combustion Calculator](https://hongbinli.com/tools/combustion-calculator)
-- [Loop Load Calculator](https://hongbinli.com/tools/loop-load)
+- [PID Tuner](https://www.hongbinli.ca/tools/pid-tuner)
+- [Manual PID Tuner](https://www.hongbinli.ca/tools/manual-pid-tuner)
+- [Relay Feedback PID Tuner](https://www.hongbinli.ca/tools/relay-pid-tuner)
+- [Process Model Simulator](https://www.hongbinli.ca/tools/process-model)
+- [MRAC Demo](https://www.hongbinli.ca/tools/mrac-demo)
+- [Combustion Calculator](https://www.hongbinli.ca/tools/combustion-calculator)
+- [Loop Load Calculator](https://www.hongbinli.ca/tools/loop-load)
 
 ## License
 

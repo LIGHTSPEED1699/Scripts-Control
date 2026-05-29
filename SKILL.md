@@ -87,12 +87,12 @@ const result = simulateSetpoint(plant, kp, 1/ti, kp*td, 0.1, 0.01);
 
 ## Related Tools
 
-These algorithms power the following interactive tools on [hongbinli.com](https://hongbinli.com):
-- [PID Tuner](https://hongbinli.com/tools/pid-tuner)
-- [Manual PID Tuner](https://hongbinli.com/tools/manual-pid-tuner)
-- [Relay Feedback PID Tuner](https://hongbinli.com/tools/relay-pid-tuner)
-- [Process Model Simulator](https://hongbinli.com/tools/process-model)
-- [MRAC Demo](https://hongbinli.com/tools/mrac-demo)
+These algorithms power the following interactive tools on [www.hongbinli.ca](https://www.hongbinli.ca):
+- [PID Tuner](https://www.hongbinli.ca/tools/pid-tuner)
+- [Manual PID Tuner](https://www.hongbinli.ca/tools/manual-pid-tuner)
+- [Relay Feedback PID Tuner](https://www.hongbinli.ca/tools/relay-pid-tuner)
+- [Process Model Simulator](https://www.hongbinli.ca/tools/process-model)
+- [MRAC Demo](https://www.hongbinli.ca/tools/mrac-demo)
 
 ## Contributing
 

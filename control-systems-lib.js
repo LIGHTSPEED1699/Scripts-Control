@@ -117,6 +117,21 @@ function parseCoeffs(str) {
 
 /**
  * PID Controller with derivative filter and output clamping
+ *
+ * v1.3.0 update: uses **derivative-on-measurement** (industrial best practice)
+ * with **back-calculation anti-windup**, matching the website's ManualPIDTuner.astro.
+ *
+ * Why derivative-on-measurement:
+ *   - Setpoint changes don't produce a "derivative kick" because the derivative
+ *     term depends only on the measurement (which is smooth) rather than the
+ *     setpoint (which can step abruptly).
+ *
+ * Why back-calculation anti-windup:
+ *   - When the output saturates, the integral is corrected by the saturation
+ *     error divided by ki, then the output is re-computed. This is preferred
+ *     over the simpler "clamp-and-clamp-integral" approach because it gives
+ *     smooth windup recovery when the actuator comes back into range.
+ *
  * @param {number} kp - Proportional gain
  * @param {number} ki - Integral gain
  * @param {number} kd - Derivative gain
@@ -134,41 +149,54 @@ class PIDController {
     this.limits = limits || [-Infinity, Infinity];
 
     this.integral = 0;
-    this.prevError = 0;
-    this.filteredDerivative = 0;
+    this.prevMeas = null;
+    this.prevDeriv = 0;
   }
 
   reset() {
     this.integral = 0;
-    this.prevError = 0;
-    this.filteredDerivative = 0;
+    this.prevMeas = null;
+    this.prevDeriv = 0;
   }
 
   update(setpoint, measurement) {
     const error = setpoint - measurement;
+    const pTerm = this.kp * error;
 
-    // Proportional
-    const P = this.kp * error;
-
-    // Integral with anti-windup
+    // Integral (with back-calculation anti-windup applied later if saturated)
     this.integral += error * this.dt;
-    const I = this.ki * this.integral;
+    let iTerm = this.ki * this.integral;
 
-    // Derivative with filter
-    const rawDerivative = (error - this.prevError) / this.dt;
-    const alpha = this.tau_d / (this.tau_d + this.dt);
-    this.filteredDerivative = alpha * this.filteredDerivative + (1 - alpha) * rawDerivative;
-    const D = this.kd * this.filteredDerivative;
+    // Derivative on MEASUREMENT (not error) — avoids setpoint kicks.
+    //   dRaw = -(measurement - prevMeas) / dt   (sign chosen so that a rising
+    //                                            measurement increases the
+    //                                            control action, matching the
+    //                                            "error derivative" convention
+    //                                            under steady setpoint)
+    //   alpha = dt / (tau_d + dt)  (one-pole low-pass on dRaw)
+    let dTerm = 0;
+    if (this.prevMeas !== null) {
+      const dRaw = -(measurement - this.prevMeas) / this.dt;
+      const alpha = this.dt / (this.tau_d + this.dt);
+      const dFiltered = alpha * dRaw + (1 - alpha) * this.prevDeriv;
+      this.prevDeriv = dFiltered;
+      dTerm = this.kd * dFiltered;
+    }
+    this.prevMeas = measurement;
 
-    this.prevError = error;
+    // Output, with saturation
+    const outputUnsat = pTerm + iTerm + dTerm;
+    let output = Math.max(this.limits[0], Math.min(this.limits[1], outputUnsat));
 
-    // Compute output with clamping
-    let output = P + I + D;
-    output = Math.max(this.limits[0], Math.min(this.limits[1], output));
-
-    // Anti-windup: back-calculate integral if clamped
-    if (output !== P + I + D) {
-      this.integral = (output - P - D) / this.ki;
+    // Back-calculation anti-windup: if saturated, correct the integral
+    // by satErr/ki and re-compute the output. This is the conditional
+    // form used by the website: skip the back-correction when ki === 0
+    // to avoid division by zero (pure P / PD controller).
+    if (this.ki !== 0) {
+      const satErr = output - outputUnsat;
+      this.integral += satErr / this.ki;
+      iTerm = this.ki * this.integral;
+      output = Math.max(this.limits[0], Math.min(this.limits[1], pTerm + iTerm + dTerm));
     }
 
     return output;

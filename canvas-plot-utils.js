@@ -208,32 +208,42 @@ function drawTrace(ctx, history, key, color, width, height,
 }
 
 /**
- * Draw horizontal dashed line (e.g., setpoint)
+ * Draw horizontal dashed line (e.g., setpoint) at a specific y value.
+ *
+ * NOTE: As of v1.3.0 this function is kept for backward compatibility but the
+ * recommended approach is to inline the dashed-line drawing in each draw() function
+ * (matches the website's pattern in ManualPIDTuner.astro:799, 924; PIDTuner.astro:802, 949;
+ * RelayFeedbackPID.astro:1154-1171). The yMin/yMax parameters are required because the
+ * earlier hardcoded defaults (yMin=0, yMax=1.2) made the line land in the wrong place
+ * for arbitrary data ranges.
+ *
  * @param {CanvasRenderingContext2D} ctx
  * @param {number} yValue - Y value to draw at
  * @param {number} width - Canvas width
  * @param {number} height - Canvas height
+ * @param {number} yMin - Min y value (REQUIRED, was hardcoded before)
+ * @param {number} yMax - Max y value (REQUIRED, was hardcoded before)
  * @param {string} color - Line color
  * @param {string} label - Optional label
  */
-function drawDashedLine(ctx, yValue, width, height, color = '#f1f5f9', label = '') {
+function drawDashedLine(ctx, yValue, width, height, yMin, yMax, color = '#f1f5f9', label = '') {
   const pad = { top: 20, right: 20, bottom: 40, left: 50 };
   const plotH = height - pad.top - pad.bottom;
-  
+
+  if (yMax === yMin) return; // Avoid division by zero
+
   ctx.strokeStyle = color;
   ctx.lineWidth = 1.5;
   ctx.setLineDash([6, 4]);
   ctx.beginPath();
-  
-  // We need yMin/yMax for proper mapping - use defaults if not tracking
-  const yMin = 0, yMax = 1.2; // These should be passed as parameters
+
   const yPos = pad.top + plotH * (yMax - yValue) / (yMax - yMin);
-  
+
   ctx.moveTo(pad.left, yPos);
   ctx.lineTo(width - pad.right, yPos);
   ctx.stroke();
   ctx.setLineDash([]);
-  
+
   if (label) {
     ctx.fillStyle = color;
     ctx.font = '11px Inter, sans-serif';

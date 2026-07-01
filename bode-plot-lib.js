@@ -102,11 +102,11 @@ function computeTFOpenLoopBode(num, den, L, kp, ki, kd, tau_d, omega) {
       continue;
     }
     
-    // Evaluate plant TF at s = jω
-    const plantRe = evaluateTFRealPart(num, den, 0, w);
-    const plantIm = evaluateTFImagPart(num, den, 0, w);
-    const plantMag = Math.sqrt(plantRe.re * plantRe.re + plantIm.im * plantIm.im);
-    const plantPhase = Math.atan2(plantIm.im, plantRe.re) * 180 / Math.PI - w * L * 180 / Math.PI;
+    // Evaluate plant TF at s = jω using the canonical evaluateTF from control-systems-lib.js
+    // evaluateTF returns {re, im} (real and imaginary parts of the complex result).
+    const plantResult = evaluateTF(num, den, 0, w);
+    const plantMag = Math.sqrt(plantResult.re * plantResult.re + plantResult.im * plantResult.im);
+    const plantPhase = Math.atan2(plantResult.im, plantResult.re) * 180 / Math.PI - w * L * 180 / Math.PI;
     
     // PID controller
     const wTd = w * tau_d;
@@ -122,17 +122,6 @@ function computeTFOpenLoopBode(num, den, L, kp, ki, kd, tau_d, omega) {
   }
   
   return { mag, phase };
-}
-
-// Helper: Evaluate TF real part at s = jω
-function evaluateTFRealPart(num, den, sigma, omega) {
-  // This is a simplified version - full implementation in control-systems-lib.js
-  return { re: 1, im: 0 }; // Placeholder
-}
-
-// Helper: Evaluate TF imaginary part at s = jω
-function evaluateTFImagPart(num, den, sigma, omega) {
-  return { re: 0, im: 0 }; // Placeholder
 }
 
 // ============================================================================

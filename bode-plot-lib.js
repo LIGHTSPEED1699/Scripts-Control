@@ -279,6 +279,18 @@ function evaluateTF(num, den, sRe, sIm) {
 // Module Exports
 // ============================================================================
 
+// ESM exports — mirror the CJS block below for `import { ... }` consumers.
+export {
+  logspace,
+  computeOpenLoopBode,
+  computeTFOpenLoopBode,
+  findMargins,
+  isStable,
+  estimateBandwidth,
+  computeNyquist,
+  evaluateTF
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     logspace,

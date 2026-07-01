@@ -584,6 +584,28 @@ function relayFeedbackSimulation(plant, amplitude, dt, simTime) {
 // Module Exports
 // ============================================================================
 
+// ESM exports — mirror the CJS block below for `import { ... }` consumers.
+export {
+  tfToStateSpace,
+  evaluateTF,
+  parseCoeffs,
+  PIDController,
+  createFOLPD,
+  createSOPDT,
+  createArbitraryTF,
+  simulateSetpoint,
+  simulateDisturbance,
+  getProcessTimeConstant,
+  logspace,
+  zieglerNichols,
+  cohenCoon,
+  chienHronesReswick,
+  imcTuning,
+  imcPI,
+  amigoTuning,
+  relayFeedbackSimulation
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     tfToStateSpace,

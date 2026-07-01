@@ -264,6 +264,20 @@ function convertFlow(value, fromUnit, toUnit) {
 // Module Exports
 // ============================================================================
 
+// ESM exports — mirror the CJS block below for `import { ... }` consumers.
+export {
+  FUELS,
+  AIR_O2_FRACTION,
+  AIR_N2_FRACTION,
+  o2DryNG,
+  o2DryH2,
+  calculateCombustion,
+  excessAirFromO2,
+  fuelFlowForHeatInput,
+  convertFlow,
+  CONVERSIONS
+};
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     FUELS,

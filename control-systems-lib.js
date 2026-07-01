@@ -441,16 +441,48 @@ function chienHronesReswick(K, T, L) {
 
 /**
  * Internal Model Control (IMC) PID tuning
+ *
+ * v1.3.0 update: use the more accurate half-dead-time (L/2) approximation
+ * from PIDTuner.astro:1184-1189. For a first-order-plus-dead-time plant
+ * with non-negligible dead time, the simple `T / (K * (L + tau_c))`
+ * formula over-estimates Kp by ignoring that some of the dead time is
+ * already absorbed by the plant pole.
+ *
+ * Numerical comparison at K=1, T=5, L=1, tau_c=1:
+ *   v1.2.0 (simple):   kp = 5 / (1 * (1 + 1)) = 2.5
+ *   v1.3.0 (half-L):   kp = (5 + 0.5) / (1 * (1 + 0.5)) = 2.667  (+6.7%)
+ *
  * @param {number} K - Process gain
  * @param {number} T - Time constant
  * @param {number} L - Dead time
- * @param {number} tau_c - Closed-loop time constant
- * @returns {Object} PID parameters {kp, ti, td}
+ * @param {number} tau_c - Closed-loop time constant (filter tuning knob)
+ * @returns {Object} PID parameters {kp, ki, kd}
  */
 function imcTuning(K, T, L, tau_c) {
-  const kp = T / (K * (L + tau_c));
-  const ti = T;
-  const td = 0.5 * L;
+  const kp = (T + L / 2) / (K * (tau_c + L / 2));
+  const ki = kp / (T + L / 2);
+  const kd = kp * T * L / (2 * (T + L / 2));
+  return { kp, ki, kd };
+}
+
+/**
+ * AMIGO tuning rule (Åström & Hägglund, Advanced PID Control, Eq. 7.7, p. 233).
+ *
+ * New in v1.3.0. AMIGO is the "Almost Minimum Input-Output" rule, derived
+ * for robust performance on first-order-plus-dead-time plants. It typically
+ * gives less aggressive gains than Ziegler-Nichols while still being simple
+ * to compute from open-loop step-test data.
+ *
+ * @param {number} K - Process gain
+ * @param {number} T - Time constant
+ * @param {number} L - Dead time
+ * @returns {Object} PID parameters {kp, ti, td}
+ */
+function amigoTuning(K, T, L) {
+  if (K === 0) return { kp: 0, ti: 0, td: 0 };
+  const kp = (1 / K) * (0.2 + 0.45 * T / L);
+  const ti = ((0.4 * L + 0.8 * T) / (L + 0.1 * T)) * L;
+  const td = (0.5 * L * T) / (0.3 * L + T);
   return { kp, ti, td };
 }
 
@@ -570,6 +602,7 @@ if (typeof module !== 'undefined' && module.exports) {
     chienHronesReswick,
     imcTuning,
     imcPI,
+    amigoTuning,
     relayFeedbackSimulation
   };
 }
